@@ -13,6 +13,8 @@ const intl = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function Order() {
   const [pizzaTypes, setPizzaTypes] = useState([]);
   const [pizzaType, setPizzaType] = useState("pepperoni");
@@ -20,12 +22,10 @@ function Order() {
   const [cart, setCart] = useContext(CartContext);
   const [loading, setLoading] = useState(true);
 
-  console.log("pizzaType:", pizzaType, ", pizzaSize:", pizzaSize);
-
   async function checkout() {
     setLoading(true);
 
-    await fetch("/api/order", {
+    await fetch(`${apiUrl}/api/order`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,10 +37,6 @@ function Order() {
     setLoading(false);
   }
 
-  function addToCart() {
-    setCart([...cart, { pizza: selectedPizza, size: pizzaSize, price }]);
-  }
-
   let price, selectedPizza;
 
   if (!loading) {
@@ -48,17 +44,21 @@ function Order() {
     price = intl.format(selectedPizza?.sizes[pizzaSize]);
   }
 
+  useEffect(() => {
+    fetchPizzaTypes();
+  }, []);
+
   async function fetchPizzaTypes() {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    const pizzaRes = await fetch("/api/pizzas");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const pizzaRes = await fetch(`${apiUrl}/api/pizzas`);
     const pizzaJson = await pizzaRes.json();
     setPizzaTypes(pizzaJson);
     setLoading(false);
   }
 
-  useEffect(() => {
-    fetchPizzaTypes();
-  }, []);
+  function addToCart() {
+    setCart([...cart, { pizza: selectedPizza, size: pizzaSize, price }]);
+  }
 
   return (
     <div className="order-page">

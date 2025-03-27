@@ -2,13 +2,13 @@ import js from "@eslint/js";
 import globals from "globals";
 import prettier from "eslint-config-prettier";
 import reactPlugin from "eslint-plugin-react";
-import pluginQuery from "@tanstack/estlint-plugin-query";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   js.configs.recommended,
   {
-    ...pluginQuery.configs["flat/recommended"],
+    ...reactPlugin.configs.flat.recommended,
     settings: {
       react: {
         version: "detect",
@@ -17,7 +17,7 @@ export default [
   },
   // for fixing the error of not importing React in JSX files
   reactPlugin.configs.flat["jsx-runtime"],
-  ...reactPlugin.configs.flat.recommended,
+  ...pluginQuery.configs["flat/recommended"],
   {
     files: ["**/*.js", "**/*.jsx"],
     languageOptions: {
